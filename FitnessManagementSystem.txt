@@ -1,0 +1,547 @@
+-- SECTION 1) Creating TABLES
+
+CREATE TABLE MEMBERSHIP_TYPE
+(
+	membership_code CHAR(5) NOT NULL,
+	membership_type varchar(20) NOT NULL,
+	membership_fee decimal (6, 2),
+	membership_duration_in_months integer,
+	PRIMARY KEY (membership_code)
+)
+
+CREATE TABLE MEMBERSHIP_PLAN
+(
+	membership_ID char(5) NOT NULL,
+	membership_code char(5),
+	membership_start_date date,
+	membership_end_date date,
+	PRIMARY KEY (membership_id),
+	FOREIGN KEY (membership_code) REFERENCES MEMBERSHIP_TYPE
+)
+
+CREATE TABLE PERSONAL_TRAINING
+(
+	personal_ID char(5) NOT NULL PRIMARY KEY,
+	fitness_objective varchar(20),
+	muscle_trained varchar(20),
+	exercise_intensity_level varchar(20),
+	personal_training_fees decimal(6,2)
+)
+CREATE TABLE WORKOUT_APPOINTMENT
+(
+	workout_ID char(5) NOT NULL PRIMARY KEY,
+	personal_id char(5),
+	workout_duration time,
+	workout_objective varchar(50),
+	FOREIGN KEY (personal_ID) REFERENCES PERSONAL_TRAINING
+)
+CREATE TABLE TRAINER
+(
+	trainer_id char(5) NOT NULL PRIMARY KEY,
+	trainer_Fname varchar(20),
+	trainer_Lname varchar(20),
+	trainer_DOB date,
+	trainer_gender char(1)
+)
+CREATE TABLE Assign
+(
+	workout_ID char(5) NOT NULL,
+	trainer_id char(5) NOT NULL,
+	start_time time,
+	end_time time,
+	"Date" date,
+	PRIMARY KEY (workout_ID, trainer_ID),
+	FOREIGN KEY (workout_ID) REFERENCES Workout_Appointment,
+	FOREIGN KEY (trainer_ID) REFERENCES trainer
+)
+CREATE TABLE Walk_in_Pass
+(
+	walk_in_id char(5) NOT NULL PRIMARY KEY,
+	walk_in_type SMALLINT,
+	start_time time,
+	end_time time,
+	walk_in_fees decimal(6,2)
+)
+
+CREATE TABLE Customer
+( 
+	customer_id char(5) NOT NULL PRIMARY KEY,
+	personal_id char(5),
+	membership_id char(5),
+	walk_in_id char(5),
+	customer_Fname varchar(20),
+	customer_Lname varchar(20),
+	customer_Phone char(10),
+	customer_Gender char(1),
+	customer_Address varchar(50),
+	customer_ZipCode char(5),
+	customer_membership_status varchar(8),
+	FOREIGN KEY (Personal_ID) REFERENCES Personal_Training,
+	FOREIGN KEY (Membership_ID) REFERENCES Membership_Plan,
+	FOREIGN KEY (walk_in_id) REFERENCES Walk_in_Pass
+)
+
+CREATE TABLE Invoice
+(
+	invoice_id char(5) NOT NULL PRIMARY KEY,
+	customer_id char(5),
+	invoice_date date,
+	membership_amount decimal(6,2),
+	walk_in_amount decimal(6,2),
+	personal_training_amount decimal(6,2),
+	invoice_amount decimal(6,2),
+	FOREIGN KEY (customer_ID) REFERENCES CUSTOMER
+)
+
+CREATE TABLE Payment
+(
+	payment_ID char(5) NOT NULL PRIMARY KEY,
+	invoice_id char(5) NOT NULL UNIQUE,
+	amount_paid decimal(6,2),
+	date_paid date,
+	FOREIGN KEY (invoice_ID) REFERENCES Invoice
+)
+
+--SECTION 2 ) INSERTING DATA
+INSERT INTO MEMBERSHIP_TYPE VALUES
+('MC001','VIP',1000, 12),
+('MC002','GOLD', 500, 6),
+('MC003','BRONZE',300, 3)
+
+INSERT INTO Membership_Plan VALUES
+('M0001','MC001','2021-01-01', '2021-12-31'),
+('M0002','MC001','2021-02-01', '2022-02-28'),
+('M0003','MC001','2021-03-01', '2022-03-30'),
+('M0004','MC001','2021-04-01', '2022-04-30'),
+('M0005','MC001','2021-05-01', '2022-05-31'),
+('M0006','MC002','2021-01-01', '2022-06-30'),
+('M0007','MC002','2021-01-01', '2022-06-30'),
+('M0008','MC003','2021-01-01', '2022-03-30'),
+('M0009','MC003','2021-01-01', '2022-03-30'),
+('M0010','MC003','2021-01-01', '2022-03-30'),
+('M0011','MC003','2021-01-01', '2022-03-30'),
+('M0012','MC003','2021-01-01', '2022-03-30'),
+('M0013','MC003','2021-01-01', '2022-03-30'),
+('M0014','MC003','2021-01-01', '2022-03-30'),
+('M0015','MC003','2021-01-01', '2022-03-30'),
+('M0016','MC003','2021-01-01', '2022-03-30'),
+('M0017','MC003','2021-01-01', '2022-03-30'),
+('M0018','MC003','2021-01-01', '2022-03-30'),
+('M0019','MC001','2021-01-01', '2021-12-31'),
+('M0020','MC001','2021-01-01', '2021-12-31'),
+('M0021','MC001','2021-01-01', '2021-12-31'),
+('M0022','MC001','2021-01-01', '2021-12-31'),
+('M0023','MC001','2021-01-01', '2021-12-31'),
+('M0024','MC001','2021-01-01', '2021-12-31'),
+('M0025','MC001','2021-01-01', '2021-12-31'),
+('M0026','MC001','2021-01-01', '2021-12-31'),
+('M0027','MC001','2021-01-01', '2021-12-31')
+
+
+INSERT INTO Walk_in_Pass VALUES
+('W0001',1, '14:00','15:00',20),
+('W0002',2, '14:00','16:00',40),
+('W0003',3, '14:00','17:00',60),
+('W0004',4, '14:00','18:00',80),
+('W0005',5, '14:00','19:00',100),
+('W0006',5, '14:00','19:00',100),
+('W0007',5, '14:00','19:00',100),
+('W0008',5, '14:00','19:00',100),
+('W0009',5, '14:00','19:00',100),
+('W0010',5, '14:00','19:00',100)
+
+INSERT INTO Personal_Training VALUES 
+('P0001','Weight loss','Squats ','Moderate',50),
+('P0002','Weight loss',' Pull ups','Moderate',50),
+('P0003','Weight loss','Bench press ','Intense',100),
+('P0004','Weight loss','Dumbbell','Easy',20),
+('P0005','Weight loss','Treadmill','Easy',20),
+('P0006','Muscle gain','Dead lifts ','Intense',100),
+('P0007','Muscle gain','Shoulder press ','Intense',100),
+('P0008','Muscle gain','Bench press ','Intense',100),
+('P0009','Muscle gain','Squats','Intense',100),
+('P0010','Muscle gain','Burpees','Easy',50)
+
+INSERT INTO Trainer VALUES
+('T0001','Florence', 'Alex', '1992-02-09', 'M'),
+('T0002','Haziq', 'Tajudin', '1994-11-29', 'M'),
+('T0003','Afiq', 'Faisal', '1995-04-13', 'M'),
+('T0004','Lee', 'Daren', '1990-07-22', 'M'),
+('T0005','Kamal', 'Hariss', '1996-05-17', 'M'),
+('T0006','Olivia', 'Senrose', '1997-03-27', 'F'),
+('T0007','Amelia', 'Henderson', '1990-08-13', 'F'),
+('T0008','Aisyah', 'Alyah', '1993-05-01', 'F'),
+('T0009','Sofia', 'Nassir', '1995-05-01', 'F'),
+('T0010','Salma', 'Ahmed', '1996-07-01', 'F')
+
+
+INSERT INTO Customer VALUES
+('C0001', 'P0001',NULL,'W0001','Jamal','Ahmed','0182324586','M','No. 15 Jalan Semarak Kuala Lumpur','42300','Inactive'),
+('C0002', 'P0001',NULL,'W0001','Ain','Maisara','0172587190','F','No.29 Jalan PU7/2 Puchong','47140','Inactive'),
+('C0003', 'P0001',NULL,'W0001','Timothy', 'Chin','0192478412','M','No.2 Jalan Tun Keramat Kuala Lumpur','86900','Inactive'),
+('C0004', NULL,NULL,'W0002','Wan','Yasin','0182324587','M','No. 15 Jalan Semarak Kuala Lumpur','42300','Inactive'),
+('C0005', NULL,NULL,'W0002','Tan','Saw','0182324579','F','No. 18 Jalan Semarak Kuala Lumpur','42300','Inactive'),
+('C0006', 'P0002','M0001',NULL,'Ng','Hew','0182324566','M','No. 20 Jalan Multimedia Cyberjaya','63000','Active'),
+('C0007', 'P0002','M0002',NULL,'Tommy','Abraham','0182324666','M','No. 20 Jalan Multimedia Cyberjaya','63000','Active'),
+('C0008', 'P0002','M0003',NULL,'Tom','Hazard','0182324566','M','No. 21 Jalan Multimedia Cyberjaya','63000','Active'),
+('C0009', NULL,'M0004',NULL,'Eden','Hazard','0189992299','M','No. 22 Jalan Multimedia Cyberjaya','63000','Active'),
+('C0010', NULL,'M0005',NULL,'Ahmed','Hassan','0189992211','M','No. 10 Jalan Cybersquare','63000','Active'),
+('C0011', 'P0003','M0006',NULL,'Ali','Rahman','0133657811','M','No. 55 Jalan Amanputra Puchong','47130','Active'),
+('C0012', 'P0004',NULL,'W0003','Aiman','Azizi','0149889341','M','No. 34 Jalan Nusaputra Puchong','47130','Inactive'),
+('C0013', NULL,'M0007',NULL,'Alya','Nafeesa','0167332561','F','No. 11 Jalan Tun Hussein Onn Kuala Lumpur','86900','Active'),
+('C0014', NULL,NULL,'W0004','Chuah','JiYoo','0126635434','F','No. 33 Jalan Bukit Angsana Puchong ','47130','Inactive'),
+('C0015', 'P0005','M0008',NULL,'Khairul','Alyas','0172266735','M','No. 1 Jalan Bukit Angkasa Kuala Lumpur','86900','Active'),
+('C0016', 'P0005',NULL,'W0004','Ilham','Zakaria','012389983','M','No. 65 Jalan Puchong Utama2 Puchong','47130','Inactive'),
+('C0017', NULL,'M0009',NULL,'Dalia','Rizal','0137116255','F','No. 3 Jalan Ampang Jaya Kuala Lumpur','86900','Active'),
+('C0018', NULL,NULL,'W0005','Amran','Abu','0132565534','M','No. 88 Jalan Kampung Baru Kuala Lumpur','42300','Inactive'),
+('C0019', 'P0006','M0010',NULL,'Ng','Khaisyen','0134668977','M','No. 5 Jalan Aman Jaya Puchong','47130','Active'),
+('C0020', 'P0007',NULL,'W0003','Farid','Kamil','0178325635','M','No. 34 Jalan Simpang Empat Kuala Lumpur','42300','Inactive'),
+('C0021', 'P0001','M0011',NULL,'Ng','Lew', '0134668977','M','No. 5 Jalan Aman Jaya Puchong','47130','Active'),
+('C0022', 'P0002','M0012',NULL,'Lee','Hoo','0134668988','M','No. 7 Jalan Aman Jaya Puchong','47130','Active'),
+('C0023', 'P0005','M0013',NULL,'Chan','Kok','0134668986','M','No. 5 Jalan Aman Jaya Puchong','47130','Active'),
+('C0024', 'P0001','M0014', null ,'Ahmed','Abdullah','0132061817','M','No. 11 Seksyen 4','43650','Active'),
+('C0025', 'P0001','M0015',null,'Mohammed','Ahmed','017255007','M','No.29 Seksyen 5','43650','Active'),
+('C0026', 'P0001','M0016',null,'Jack','Willy','017255237','M','No.29 Seksyen 5','43650','Active'),
+('C0027', 'P0001','M0017',null,'Abullah','Ahmed','017255237','M','No.29 Seksyen 5','43650','Active'),
+('C0028', 'P0001','M0018',null,'Mohammed','Abdullah','017255237','M','No.29 Seksyen 5','43650','Active'),
+('C0029', 'P0001','M0019',null,'Mohammed','Zakaria','017255238','M','No.29 Seksyen 5','43650','Active'),
+('C0030', 'P0001','M0020',null,'Ahmed','Salem','017255247','M','No.29 Seksyen 5','43650','Active'),
+('C0031', 'P0001','M0021',null,'Mohammed','Salah','017255537','M','No.29 Seksyen 5','43650','Active'),
+('C0032', 'P0001','M0022',null,'Sadio','Mane','017255737','M','No.29 Seksyen 5','43650','Active'),
+('C0033', 'P0001','M0023',null,'Mohammed','Jamal','017255637','M','No.29 Seksyen 5','43650','Active'),
+('C0034', 'P0001','M0024',null,'Abullah','Hassan','017254637','M','No.29 Seksyen 5','43650','Active'),
+('C0035', 'P0001',null,'W0001','Azmi','Hassan','017254537','M','No.29 Seksyen 5','43650','Active'),
+('C0036', 'P0001','M0025',null,'Haziq','Hassan','018254537','M','No.29 Seksyen 5','43650','Active'),
+('C0037', 'P0001','M0026',null,'Abdullah','Hassan','019254537','M','No.29 Seksyen 5','43650','Active'),
+('C0038', 'P0001','M0027',null,'Amir','Ahmed','019254537','M','No.29 Seksyen 5','43650','Active'),
+('C0039', 'P0001',NULL,'W0001','Ali','Ahmed','0182454586','M','No. 15 Jalan Semarak Kuala Lumpur','42300','Inactive'),
+('C0040', 'P0001',NULL,'W0001','Kevin','Alexander','0183454586','M','No. 15 Jalan Semarak Kuala Lumpur','42300','Inactive'),
+('C0041', 'P0002',NULL,'W0001','Khairul','Ahmad','0182354586','M','No. 13 Jalan Semarak Kuala Lumpur','42300','Inactive')
+
+INSERT INTO WORKOUT_APPOINTMENT VALUES
+('WK001', 'P0001', '00:30', 'Provide squats training for weight loss'),
+('WK002', 'P0002', '00:50', 'Provide pull ups training for weight loss'),
+('WK003', 'P0001', '00:30', 'Provide squats training for weight loss'),
+('WK004', 'P0002', '00:50', 'Provide pull ups training for weight loss'),
+('WK005', 'P0003','00:30', 'Provide bench press training for weight loss'),
+('WK006', 'P0003','00:30', 'Provide bench press training for weight loss'),
+('WK007', 'P0004','00:50', 'Provide dumbbell training for weight loss'),
+('WK008', 'P0004','00:50', 'Provide dumbbell training for weight loss'),
+('WK009', 'P0005','00:40', 'Provide treadmill training for weight loss'),
+('WK010', 'P0005','00:40', 'Provide treadmill training for weight loss'),
+('WK011', 'P0006','00:40', 'Provide deadlifts training for muscle gain'),
+('WK012', 'P0006','00:40', 'Provide deadlifts training for muscle gain'),
+('WK013', 'P0007','00:50', 'Provide shoulder press training for muscle gain'),
+('WK014', 'P0007','00:50', 'Provide shoulder press training for muscle gain'),
+('WK015', 'P0008','00:40', 'Provide bench press training for muscle gain'),
+('WK016', 'P0008','00:40', 'Provide bench press training for muscle gain'),
+('WK017', 'P0009','00:30', 'Provide squats training for muscle gain'),
+('WK018', 'P0009','00:30', 'Provide squats training for muscle gain'),
+('WK019', 'P0010','00:50', 'Provide burpies training for muscle gain'),
+('WK020', 'P0010','00:50', 'Provide burpies training for muscle gain'),
+('WK021', 'P0001', '00:30', 'Provide squats training for weight loss'),
+('WK022', 'P0002', '00:50', 'Provide treadmill training for weight loss'),
+('WK023', 'P0001', '00:50', 'Provide treadmill training for weight loss')
+
+UPDATE WORKOUT_APPOINTMENT 
+SET PERSONAL_ID = 'P0005'
+WHERE WORKOUT_ID = 'WK023'
+
+INSERT INTO ASSIGN VALUES
+('WK003', 'T0001',  '10:00', '10:30', '2021-06-01'),
+('WK004', 'T0001',  '10:00', '10:30', '2021-06-05'),
+('WK005', 'T0001',  '10:00', '10:50', '2021-06-15'),
+('WK006', 'T0001',  '10:00', '10:50', '2021-06-02'),
+('WK007', 'T0001',  '10:00', '10:50', '2021-06-08'),
+('WK008', 'T0001',  '10:00', '10:50', '2021-06-01'),
+('WK009', 'T0002',  '10:00', '10:30', '2021-06-01'),
+('WK010', 'T0002',  '10:00', '10:30', '2021-06-20'),
+('WK011', 'T0002',  '10:00', '10:30', '2021-06-01'),
+('WK012', 'T0002',  '10:00', '10:50', '2021-06-25'),
+('WK014', 'T0002',  '10:00', '10:50', '2021-06-01'),
+('WK015', 'T0002',  '10:00', '10:50', '2021-06-18'),
+('WK016', 'T0003',  '09:00', '09:30',  '2021-07-01'),
+('WK017', 'T0003',  '09:00', '09:30',  '2021-07-05'),
+('WK018', 'T0003',  '09:00', '09:30',  '2021-07-02')
+
+INSERT INTO INVOICE VALUES
+('I0001','C0001','2021-01-01',NULL,NULL,NULL,NULL),
+('I0002','C0002','2021-01-01',NULL,NULL,NULL,NULL),
+('I0003','C0003','2021-01-01',NULL,NULL,NULL,NULL),
+('I0004','C0004','2021-01-01',NULL,NULL,NULL,NULL),
+('I0005','C0005','2021-01-01',NULL,NULL,NULL,NULL),
+('I0006','C0006','2021-01-01',NULL,NULL,NULL,NULL),
+('I0007','C0007','2021-01-01',NULL,NULL,NULL,NULL),
+('I0008','C0008','2021-01-01',NULL,NULL,NULL,NULL),
+('I0009','C0009','2021-01-01',NULL,NULL,NULL,NULL),
+('I0010','C0010','2021-01-01',NULL,NULL,NULL,NULL),
+('I0011','C0011','2021-01-01',NULL,NULL,NULL,NULL),
+('I0012','C0012','2021-01-01',NULL,NULL,NULL,NULL),
+('I0013','C0013','2021-01-01',NULL,NULL,NULL,NULL),
+('I0014','C0014','2021-01-01',NULL,NULL,NULL,NULL),
+('I0015','C0015','2021-01-01',NULL,NULL,NULL,NULL),
+('I0016','C0016','2021-01-01',NULL,NULL,NULL,NULL),
+('I0017','C0017','2021-01-01',NULL,NULL,NULL,NULL),
+('I0018','C0018','2021-01-01',NULL,NULL,NULL,NULL),
+('I0019','C0019','2021-01-01',NULL,NULL,NULL,NULL),
+('I0020','C0020','2021-01-01',NULL,NULL,NULL,NULL),
+('I0021','C0021','2021-01-01',NULL,NULL,NULL,NULL),
+('I0022','C0022','2021-01-01',NULL,NULL,NULL,NULL),
+('I0023','C0023','2021-01-01',NULL,NULL,NULL,NULL),
+('I0024','C0024','2021-01-01',NULL,NULL,NULL,NULL),
+('I0025','C0025','2021-01-01',NULL,NULL,NULL,NULL),
+('I0026','C0026','2021-01-01',NULL,NULL,NULL,NULL),
+('I0027','C0027','2021-01-01',NULL,NULL,NULL,NULL),
+('I0028','C0028','2021-01-01',NULL,NULL,NULL,NULL),
+('I0029','C0029','2021-01-01',NULL,NULL,NULL,NULL),
+('I0030','C0030','2021-01-01',NULL,NULL,NULL,NULL),
+('I0031','C0031','2021-01-01',NULL,NULL,NULL,NULL),
+('I0032','C0032','2021-01-01',NULL,NULL,NULL,NULL),
+('I0033','C0033','2021-01-01',NULL,NULL,NULL,NULL),
+('I0034','C0034','2021-01-01',NULL,NULL,NULL,NULL),
+('I0035','C0035','2021-01-01',NULL,NULL,NULL,NULL),
+('I0036','C0036','2021-01-01',NULL,NULL,NULL,NULL),
+('I0037','C0037','2021-01-01',NULL,NULL,NULL,NULL),
+('I0038','C0038','2021-01-01',NULL,NULL,NULL,NULL),
+('I0039','C0039','2021-01-01',NULL,NULL,NULL,NULL),
+('I0040','C0040','2021-01-01',NULL,NULL,NULL,NULL),
+('I0041','C0041','2021-01-01',NULL,NULL,NULL,NULL)
+
+
+INSERT INTO PAYMENT  VALUES 
+('P0001','I0001', null, '2021-01-01'),
+('P0002','I0002', null, '2021-01-01'),
+('P0003','I0003', null, '2021-01-01'),
+('P0004','I0004', null, '2021-01-01'),
+('P0005','I0005', null, '2021-01-01'),
+('P0006','I0006', null, '2021-01-01'),
+('P0007','I0007', null, '2021-01-01'),
+('P0008','I0008', null, '2021-01-01'),
+('P0009','I0009', null, '2021-01-01'),
+('P0010','I0010', null, '2021-01-01')
+
+UPDATE PAYMENT
+SET AMOUNT_PAID  = (SELECT Invoice_Amount 
+					FROM INVOICE i, PAYMENT p
+					WHERE p.INVOICE_ID  = i.INVOICE_ID)
+------------------------------------------------------------------------------------------------------------------
+DELETE FROM invoice WHERE INVOICE_ID  = 'I0041';  			-- USE THIS WHEN WANT TO TRY THE TRIGGER
+
+INSERT INTO INVOICE VALUES 									-- USE THIS WHEN WANT TO TRY THE TRIGGER
+('I0041','C0041','2021-01-01',NULL,NULL,NULL,NULL);  	-- USE THIS WHEN WANT TO TRY THE TRIGGER
+------------------------------------------------------------------------------------------------------------------
+
+
+
+
+--SECTION 3)  Data Manipulation:
+
+--ITEM 1 ONE query with aggregate function(s) (count, max, min, avg,sum)
+
+Select count(Customer_membership_status) as Num_of_Active__VIP_Male_Member
+	From Customer c, MEMBERSHIP_PLAN mp
+		Where Customer_membership_status = 'Active' AND
+			Customer_gender = 'M' AND 
+				Personal_ID is Not NULL AND 
+					c.MEMBERSHIP_ID = mp.MEMBERSHIP_ID AND
+							mp.MEMBERSHIP_CODE  =  'MC001' AND 
+								mp.MEMBERSHIP_START_DATE >= '2021-01-01' AND 
+									mp.MEMBERSHIP_END_DATE  <= '2022-05-31';
+
+								
+--ITEM 2 VIEW
+CREATE VIEW "Weight Loss Sessions"
+AS 
+SELECT C.CUSTOMER_ID , PT.PERSONAL_ID , PT.FITNESS_OBJECTIVE, A."Date" , A.START_TIME, A.END_TIME
+FROM Personal_Training PT, Workout_Appointment WA, ASSIGN A, TRAINER T, CUSTOMER C
+	WHERE FITNESS_OBJECTIVE = 'Weight loss' AND 
+		T.TRAINER_GENDER  = 'M' AND
+			 A."Date" BETWEEN '2021-06-01' AND '2021-07-31' AND
+			 C.PERSONAL_ID = PT.PERSONAL_ID AND
+					PT.PERSONAL_ID  = WA.PERSONAL_ID AND 
+						WA.WORKOUT_ID = A.WORKOUT_ID  AND 
+							A.TRAINER_ID  = T.TRAINER_ID;
+								
+--ITEM 3 ONE subquery/nested query
+SELECT  CUSTOMER_ID, MEMBERSHIP_ID, PERSONAL_ID ,CUSTOMER_FNAME,CUSTOMER_LNAME 
+	FROM CUSTOMER
+	WHERE CUSTOMER_ZIPCODE = '43650' AND
+			CUSTOMER_MEMBERSHIP_STATUS = 'Active' AND
+				MEMBERSHIP_ID IN (
+				SELECT 
+					MEMBERSHIP_ID
+				FROM 
+					Membership_PLAN
+				WHERE 
+					MEMBERSHIP_CODE = 'MC001'
+			)
+			AND PERSONAL_ID IN (
+			SELECT 
+				PERSONAL_ID
+				FROM Personal_Training 
+				WHERE 
+					PERSONAL_ID = 'P0001' OR 
+					PERSONAL_ID = 'P0002' OR 
+					PERSONAL_ID = 'P0003' OR 
+					PERSONAL_ID = 'P0004' OR 
+					PERSONAL_ID = 'P0005' 
+			)
+			
+--ITEM 4 ONE query with a group by and having clauses)
+SELECT WORKOUT_OBJECTIVE , PERSONAL_ID, COUNT(WORKOUT_ID) AS "Number of appointments for each weight loss workout objective " 
+FROM 
+	Workout_Appointment
+GROUP BY 
+	WORKOUT_OBJECTIVE,PERSONAL_ID
+HAVING 
+	WORKOUT_OBJECTIVE LIKE '%weight loss%' AND 
+	PERSONAL_ID IN (
+	SELECT 
+		PERSONAL_ID 
+	FROM 
+		PERSONAL_TRAINING 
+	WHERE 
+		Exercise_Intensity_Level = 'Moderate' OR 
+		Exercise_Intensity_Level = 'Easy'
+	)
+	
+
+-- Item 5 TRIGGER
+CREATE TRIGGER UPDATE_INVOICE_AMOUNT_FOR_MEMBERS
+AFTER INSERT ON INVOICE 
+FOR EACH ROW MODE DB2SQL 
+UPDATE INVOICE
+SET MEMBERSHIP_AMOUNT  = (
+	SELECT MEMBERSHIP_FEE 
+	FROM CUSTOMER c, MEMBERSHIP_PLAN mp , MEMBERSHIP_TYPE mt
+	WHERE INVOICE.CUSTOMER_ID  = c.CUSTOMER_ID AND 
+		c.MEMBERSHIP_ID = mp.MEMBERSHIP_ID  AND
+			mp.MEMBERSHIP_CODE  = mt.MEMBERSHIP_CODE 
+)
+
+UPDATE PAYMENT
+SET AMOUNT_PAID  = (SELECT Invoice_Amount 
+					FROM INVOICE i, PAYMENT p
+					WHERE p.INVOICE_ID  = i.INVOICE_ID)
+------------------------------------------------------------------------------------------------------------------
+DELETE FROM invoice WHERE INVOICE_ID  = 'I0041';  			-- USE THIS WHEN WANT TO TRY THE TRIGGER
+
+INSERT INTO INVOICE VALUES 									-- USE THIS WHEN WANT TO TRY THE TRIGGER
+('I0041','C0041','2021-01-01',NULL,NULL,NULL,NULL);  	-- USE THIS WHEN WANT TO TRY THE TRIGGER
+------------------------------------------------------------------------------------------------------------------
+
+
+
+CREATE TRIGGER UPDATE_INVOICE_AMOUNT_FOR_WALK_IN_CUSTOMERS
+AFTER INSERT ON INVOICE
+FOR EACH ROW MODE DB2SQL 
+UPDATE INVOICE 
+SET WALK_IN_AMOUNT  = (
+	SELECT WALK_IN_FEES 
+	FROM CUSTOMER c, WALK_IN_PASS wip 
+	WHERE INVOICE.CUSTOMER_ID  = c.CUSTOMER_ID AND 
+		c.WALK_IN_ID = wip.WALK_IN_ID
+)
+
+
+CREATE TRIGGER UPDATE_INVOICE_AMOUNT_FOR_PERSONAL_TRAINING
+AFTER INSERT ON INVOICE
+FOR EACH ROW MODE DB2SQL 
+UPDATE INVOICE 
+SET PERSONAL_TRAINING_AMOUNT  = (
+	SELECT PERSONAL_TRAINING_FEES 
+	FROM CUSTOMER c, PERSONAL_TRAINING pt 
+	WHERE INVOICE.CUSTOMER_ID  = c.CUSTOMER_ID AND 
+		c.PERSONAL_ID = pt.PERSONAL_ID 
+)
+
+
+CREATE TRIGGER UPDATE_INVOICE_AMOUNT
+AFTER INSERT ON INVOICE
+FOR EACH ROW MODE DB2SQL 
+BEGIN 
+	UPDATE INVOICE 
+	SET INVOICE_AMOUNT = MEMBERSHIP_AMOUNT + PERSONAL_TRAINING_AMOUNT
+	WHERE MEMBERSHIP_AMOUNT IS NOT NULL AND PERSONAL_TRAINING_AMOUNT IS NOT NULL ;
+
+	UPDATE INVOICE 
+	SET INVOICE_AMOUNT = WALK_IN_AMOUNT  + PERSONAL_TRAINING_AMOUNT
+	WHERE WALK_IN_AMOUNT IS NOT NULL AND PERSONAL_TRAINING_AMOUNT IS NOT NULL ;
+
+	UPDATE INVOICE 
+	SET INVOICE_AMOUNT = WALK_IN_AMOUNT 
+	WHERE WALK_IN_AMOUNT IS NOT NULL AND PERSONAL_TRAINING_AMOUNT IS NULL ;
+
+	UPDATE INVOICE 
+	SET INVOICE_AMOUNT = MEMBERSHIP_AMOUNT 
+	WHERE MEMBERSHIP_AMOUNT  IS NOT NULL AND PERSONAL_TRAINING_AMOUNT IS NULL ;
+END
+
+--Item 6 STORED PROCEDURE 
+
+UPDATE  MEMBERSHIP_PLAN 
+SET MEMBERSHIP_CODE = 'MC003'
+WHERE MEMBERSHIP_ID = 'M0015';
+
+CREATE PROCEDURE Update_Membership_Plan
+(IN ID CHAR(5), Start_Date DATE, End_Date DATE, MembershipType VARCHAR(20))
+BEGIN
+	UPDATE MEMBERSHIP_PLAN 
+	SET MEMBERSHIP_START_DATE = START_DATE,
+		MEMBERSHIP_END_DATE  = END_DATE,
+		MEMBERSHIP_CODE = 
+		(
+		 SELECT MEMBERSHIP_CODE FROM MEMBERSHIP_TYPE
+		 WHERE MEMBERSHIP_TYPE = MemberShipType
+		 )
+	WHERE MEMBERSHIP_ID = ID;
+END
+
+CALL Update_Membership_Plan('M0010', '2021-01-01', '2021-06-30','GOLD');
+--Item 6
+UPDATE MEMBERSHIP_PLAN 
+	SET membership_end_date = '2021-12-31'
+	WHERE MEMBERSHIP_ID  = 'M0001';
+
+--query 1 add_months
+UPDATE MEMBERSHIP_PLAN 
+	SET membership_end_date = ADD_MONTHS(membership_end_date, 3)
+	WHERE MEMBERSHIP_ID  = 'M0001' AND 
+	MEMBERSHIP_CODE IN (
+		SELECT mp.MEMBERSHIP_CODE 
+		FROM MEMBERSHIP_TYPE mt, MEMBERSHIP_PLAN mp
+		WHERE mp.MEMBERSHIP_CODE  = mt.MEMBERSHIP_CODE AND
+	    MEMBERSHIP_TYPE = 'VIP'
+	)
+	
+--query 2 fetch
+SELECT PAYMENT_ID,P.INVOICE_ID,CUSTOMER_ID,DATE_PAID 
+FROM PAYMENT AS P,INVOICE AS I
+WHERE P.INVOICE_ID = I.INVOICE_ID AND 
+		DATE_PAID = '2021-01-01'
+ORDER BY DATE_PAID DESC
+FETCH FIRST 10 ROWS ONLY
+
+--query 3 Except (6,7,8,9)
+SELECT INVOICE_ID, CUSTOMER_ID FROM INVOICE
+EXCEPT 
+SELECT i.INVOICE_ID, CUSTOMER_ID FROM INVOICE i, PAYMENT p 
+WHERE i.INVOICE_ID  = p.INVOICE_ID
+
+--query 4 LISTAGG
+SELECT CUSTOMER_ID, LISTAGG(CUSTOMER_FNAME||' '||CUSTOMER.CUSTOMER_LNAME) 
+AS CUSTOMER_NAME FROM CUSTOMER
+GROUP BY CUSTOMER_ID;
+
+
+
+
+
+
+
+
+
+	
+
+	
+	
